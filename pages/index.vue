@@ -60,6 +60,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { contractAbi } from "~/contracts/abi";
+import { ethers } from "ethers";
 
 const account = ref(null);
 const nfts = ref([]);
