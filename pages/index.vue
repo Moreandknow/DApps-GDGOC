@@ -49,7 +49,7 @@
       </div>
     </main>
 
-    <FeatureUploadModal
+    <ModalUpload
       v-model:is-open="isModalOpen"
       v-model:is-loading="isLoading"
       @submit="handleUploadAndMint"

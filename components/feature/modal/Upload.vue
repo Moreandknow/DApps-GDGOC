@@ -1,5 +1,5 @@
 <template>
-  <UModal v-model="model">
+  <UModal v-model="isOpen">
     <UCard>
       <template #header>
         <h2 class="text-xl font-bold">Upload & Mint NFT Baru</h2>
@@ -29,7 +29,7 @@
       <template #footer>
         <div class="flex justify-end gap-2">
           <UButton
-            @click="model = false"
+            @click="isOpen = false"
             color="gray"
             variant="ghost"
             label="Batal"
@@ -48,7 +48,7 @@
 <script setup>
 import { ref } from "vue";
 
-const model = defineModel("isOpen");
+const isOpen = defineModel("isOpen");
 const isLoading = defineModel("isLoading");
 
 const form = ref({
