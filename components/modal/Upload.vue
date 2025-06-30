@@ -1,5 +1,5 @@
 <template>
-  <UModal v-model="isOpen">
+  <UModal v-model="isOpen" prevent-close>
     <UCard>
       <template #header>
         <h2 class="text-xl font-bold">Upload & Mint NFT Baru</h2>

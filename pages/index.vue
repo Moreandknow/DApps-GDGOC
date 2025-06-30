@@ -50,6 +50,7 @@
     </main>
 
     <ModalUpload
+      v-if="isModalOpen"
       v-model:is-open="isModalOpen"
       v-model:is-loading="isLoading"
       @submit="handleUploadAndMint"
@@ -108,10 +109,14 @@ const connectWallet = async () => {
 
 const checkConnection = async () => {
   if (!provider.value) return;
-  const accounts = await provider.value.listAccounts();
-  if (accounts.length > 0) {
-    account.value = accounts[0].address;
-    fetchNfts();
+  try {
+    const accounts = await provider.value.listAccounts();
+    if (accounts.length > 0 && accounts[0]) {
+      account.value = accounts[0].address; // Correctly access the address
+      fetchNfts();
+    }
+  } catch (e) {
+    // Or handle error if you need to
   }
 };
 
@@ -127,7 +132,10 @@ const fetchNfts = async () => {
     );
 
     const balance = await contract.balanceOf(account.value);
-    if (balance.toString() === "0") return;
+    if (balance.toString() === "0") {
+      isLoading.value = false;
+      return;
+    }
 
     const tokenPromises = [];
     for (let i = 0; i < balance; i++) {
@@ -216,9 +224,10 @@ const handleUploadAndMint = async (formData) => {
     }
   } catch (e) {
     console.error("Upload/Mint Error:", e);
+    const errorMessage = e.data?.message || "Terjadi kesalahan.";
     toast.add({
       title: "Error",
-      description: e.data?.message || "Terjadi kesalahan.",
+      description: errorMessage,
       color: "red",
     });
   } finally {
@@ -226,17 +235,17 @@ const handleUploadAndMint = async (formData) => {
   }
 };
 
-// Lifecycle hook
 onMounted(() => {
   checkConnection();
   if (window.ethereum) {
     window.ethereum.on("accountsChanged", (accounts) => {
       account.value = accounts[0] || null;
-      if (account.value) fetchNfts();
-      else nfts.value = [];
+      if (account.value) {
+        fetchNfts();
+      } else {
+        nfts.value = [];
+      }
     });
   }
 });
 </script>
-
-<style scoped></style>
